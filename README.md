@@ -62,20 +62,37 @@ The application adopts a **4-Layered Architecture Pattern**:
 
 ## Getting Started & Setup
 
+### How to Run in a New Workspace / Environment
+
+If you or a colleague wants to download and run this project in a different environment or IDE (such as IntelliJ IDEA, Eclipse, or VS Code):
+
+#### 1. Clone the Repository
+Clone the repository using Git:
+```bash
+git clone https://github.com/Razz0147/consultant-management-system.git
+cd consultant-management-system
+```
+
+#### 2. Import into your IDE
+- **IntelliJ IDEA**: Open the IDE -> Click **Open** -> Navigate to the cloned folder and select `pom.xml` -> Choose **Open as Project**. Let Maven download the dependencies automatically.
+- **Eclipse**: Click **File** -> **Import** -> Select **Existing Maven Projects** -> Choose the cloned folder.
+- **VS Code**: Install the *Extension Pack for Java* and *Spring Boot Extension Pack*. Open the cloned folder.
+
+---
+
 ### Option A: Instant Launch with H2 (Default)
 
 No MySQL database setup is required to test out of the box!
 
-1. Clone or download the repository.
-2. Open terminal in the project directory:
+1. Open your terminal in the project directory:
    ```bash
    mvn clean spring-boot:run
    ```
-3. Open your browser and navigate to:
+2. Open your browser and navigate to:
    ```text
    http://localhost:8080
    ```
-4. Access the H2 Database Console at `http://localhost:8080/h2-console` (JDBC URL: `jdbc:h2:mem:consultant_db`, Username: `sa`, Password: empty).
+3. Access the H2 Database Console at `http://localhost:8080/h2-console` (JDBC URL: `jdbc:h2:mem:consultant_db`, Username: `sa`, Password: empty).
 
 ---
 
