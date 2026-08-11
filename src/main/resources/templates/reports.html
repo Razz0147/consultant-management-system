@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout('Reports & Analytics', ~{::div.reports-container})}">
+<body>
+<div class="reports-container">
+
+    <!-- KPI Summary Row -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="stat-card p-3 d-flex align-items-center gap-3">
+                <div class="stat-icon-wrapper stat-icon-primary" style="width:48px; height:48px;">
+                    <i class="fa-solid fa-people-group"></i>
+                </div>
+                <div>
+                    <span class="text-muted small fw-bold d-block">Overall Bench Strength</span>
+                    <h4 class="fw-extrabold mb-0 text-dark" th:text="${stats.totalConsultants} + ' Consultants'">105 Consultants</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card p-3 d-flex align-items-center gap-3">
+                <div class="stat-icon-wrapper stat-icon-success" style="width:48px; height:48px;">
+                    <i class="fa-solid fa-circle-dot"></i>
+                </div>
+                <div>
+                    <span class="text-muted small fw-bold d-block">Deployment Rate</span>
+                    <!-- Deployment Rate = On Project / Total Active * 100 -->
+                    <h4 class="fw-extrabold mb-0 text-success" 
+                        th:text="${stats.activeConsultants > 0 ? #numbers.formatDecimal((stats.onProjectConsultants * 100.0 / stats.activeConsultants), 1, 1) + '%' : '0.0%'}">50%</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card p-3 d-flex align-items-center gap-3">
+                <div class="stat-icon-wrapper stat-icon-info" style="width:48px; height:48px;">
+                    <i class="fa-solid fa-code-branch"></i>
+                </div>
+                <div>
+                    <span class="text-muted small fw-bold d-block">Core Skillsets Count</span>
+                    <h4 class="fw-extrabold mb-0 text-info" th:text="${stats.totalTechnologies} + ' Skills'">4 Skills</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row g-4 mb-4">
+        <!-- Experience Breakdown Chart -->
+        <div class="col-lg-6">
+            <div class="content-card h-100">
+                <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-graduation-cap me-2 text-primary"></i>Experience by Technology Stack</h5>
+                <div style="position: relative; height: 260px;">
+                    <canvas id="experienceChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status Breakdown bar chart -->
+        <div class="col-lg-6">
+            <div class="content-card h-100">
+                <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-chart-column me-2 text-primary"></i>Status Statistics Breakdown</h5>
+                <div style="position: relative; height: 260px;">
+                    <canvas id="statusBarChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Summary Table & Export Panel -->
+    <div class="row g-4">
+        <!-- Avg Exp Table -->
+        <div class="col-lg-8">
+            <div class="content-card h-100">
+                <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-table-list me-2 text-primary"></i>Skill Breakdown Analytics</h5>
+                
+                <div class="table-responsive">
+                    <table class="table custom-table align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>Technology Stack</th>
+                                <th>Average Experience</th>
+                                <th>Active Deployment</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="entry : ${avgExpByTech}">
+                                <td class="fw-bold text-dark">
+                                    <span class="tech-badge px-2.5 py-1.5 fs-7" th:text="${entry.key}">Java</span>
+                                </td>
+                                <td class="fw-semibold text-primary" th:text="${entry.value}">5.2 yrs</td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="progress flex-grow-1" style="height: 6px; border-radius: 9999px;">
+                                            <div class="progress-bar bg-success" role="progressbar" style="width: 80%; border-radius: 9999px;"></div>
+                                        </div>
+                                        <span class="small fw-semibold text-muted">Stable</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr th:if="${#maps.isEmpty(avgExpByTech)}">
+                                <td colspan="3" class="text-center text-muted py-4">No skill analytics available.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Exports Actions -->
+        <div class="col-lg-4">
+            <div class="content-card h-100 d-flex flex-column justify-content-between">
+                <div>
+                    <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-cloud-arrow-down me-2 text-primary"></i>On-Demand Exports</h5>
+                    <p class="text-muted small">
+                        Generate and download real-time directory reports of your consultants. Excel sheet maintains full data columns while PDF provides a printable formatted grid.
+                    </p>
+                    <div class="d-flex flex-column gap-3 mt-4">
+                        <a th:href="@{/consultants/export/excel}" class="btn btn-success py-3 d-flex align-items-center justify-content-center gap-2 shadow-sm">
+                            <i class="fa-solid fa-file-excel fs-4"></i>
+                            <div>
+                                <span class="d-block fw-bold" style="font-size: 0.95rem;">Download Excel Report</span>
+                                <span class="d-block text-white opacity-75 small" style="font-size: 0.75rem;">Structured Spreadsheet (.xlsx)</span>
+                            </div>
+                        </a>
+                        <a th:href="@{/consultants/export/pdf}" class="btn btn-danger py-3 d-flex align-items-center justify-content-center gap-2 shadow-sm">
+                            <i class="fa-solid fa-file-pdf fs-4"></i>
+                            <div>
+                                <span class="d-block fw-bold" style="font-size: 0.95rem;">Download PDF Report</span>
+                                <span class="d-block text-white opacity-75 small" style="font-size: 0.75rem;">Print-Ready Document (.pdf)</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="mt-4 pt-3 border-top text-center text-muted small fw-semibold">
+                    <i class="fa-solid fa-shield-halved text-success me-1"></i> Data logs fully secured
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Scripts -->
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        document.addEventListener("DOMContentLoaded", function () {
+            // --- Avg Experience Bar Chart ---
+            const avgExpData = /*[[${avgExpByTech}]]*/ {};
+            const expLabels = Object.keys(avgExpData);
+            // Parse numerical values from "5.2 yrs" format
+            const expValues = Object.values(avgExpData).map(val => parseFloat(val));
+
+            const expCtx = document.getElementById('experienceChart').getContext('2d');
+            new Chart(expCtx, {
+                type: 'bar',
+                data: {
+                    labels: expLabels,
+                    datasets: [{
+                        label: 'Avg Experience (Years)',
+                        data: expValues,
+                        backgroundColor: 'rgba(99, 102, 241, 0.65)',
+                        borderColor: '#6366f1',
+                        borderWidth: 2,
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(0, 0, 0, 0.05)' },
+                            ticks: { font: { family: "'Plus Jakarta Sans', sans-serif" } }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { font: { family: "'Plus Jakarta Sans', sans-serif", weight: '600' } }
+                        }
+                    }
+                }
+            });
+
+            // --- Status Breakdown Bar Chart ---
+            const statusData = /*[[${stats.statusDistribution}]]*/ {};
+            const statusLabels = Object.keys(statusData);
+            const statusValues = Object.values(statusData);
+
+            const statusCtx = document.getElementById('statusBarChart').getContext('2d');
+            new Chart(statusCtx, {
+                type: 'bar',
+                data: {
+                    labels: statusLabels,
+                    datasets: [{
+                        label: 'Headcount',
+                        data: statusValues,
+                        backgroundColor: [
+                            'rgba(14, 165, 233, 0.65)', // Available (Sky Blue)
+                            'rgba(99, 102, 241, 0.65)',  // On Project (Indigo)
+                            'rgba(239, 68, 68, 0.65)'    // Inactive (Rose)
+                        ],
+                        borderColor: [
+                            '#0ea5e9',
+                            '#6366f1',
+                            '#ef4444'
+                        ],
+                        borderWidth: 2,
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(0, 0, 0, 0.05)' },
+                            ticks: { font: { family: "'Plus Jakarta Sans', sans-serif" } }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { font: { family: "'Plus Jakarta Sans', sans-serif", weight: '600' } }
+                        }
+                    }
+                }
+            });
+        });
+        /*]]>*/
+    </script>
+</div>
+</body>
+</html>

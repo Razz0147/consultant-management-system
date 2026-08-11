@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout('Dashboard', ~{::div.dashboard-container})}">
+<body>
+<div class="dashboard-container">
+
+    <!-- KPI Statistics Grid (6 Cards) -->
+    <div class="row g-3 mb-4">
+        <!-- Total Consultants -->
+        <div class="col-xl-2 col-md-4 col-sm-6">
+            <div class="stat-card d-flex align-items-center justify-content-between h-100 p-3">
+                <div>
+                    <span class="text-muted fw-semibold small d-block mb-1" style="font-size: 0.8rem;">Total Consultants</span>
+                    <h3 class="fw-extrabold mb-0 text-dark" th:text="${stats.totalConsultants}">105</h3>
+                </div>
+                <div class="stat-icon-wrapper stat-icon-primary" style="width: 42px; height: 42px; font-size: 1.25rem;">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Active Consultants -->
+        <div class="col-xl-2 col-md-4 col-sm-6">
+            <div class="stat-card d-flex align-items-center justify-content-between h-100 p-3">
+                <div>
+                    <span class="text-muted fw-semibold small d-block mb-1" style="font-size: 0.8rem;">Active</span>
+                    <h3 class="fw-extrabold mb-0 text-success" th:text="${stats.activeConsultants}">90</h3>
+                </div>
+                <div class="stat-icon-wrapper stat-icon-success" style="width: 42px; height: 42px; font-size: 1.25rem;">
+                    <i class="fa-solid fa-user-check"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Available Consultants -->
+        <div class="col-xl-2 col-md-4 col-sm-6">
+            <div class="stat-card d-flex align-items-center justify-content-between h-100 p-3">
+                <div>
+                    <span class="text-muted fw-semibold small d-block mb-1" style="font-size: 0.8rem;">Available</span>
+                    <h3 class="fw-extrabold mb-0 text-info" th:text="${stats.availableConsultants}">45</h3>
+                </div>
+                <div class="stat-icon-wrapper stat-icon-info" style="width: 42px; height: 42px; font-size: 1.25rem;">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- On Project Consultants -->
+        <div class="col-xl-2 col-md-4 col-sm-6">
+            <div class="stat-card d-flex align-items-center justify-content-between h-100 p-3">
+                <div>
+                    <span class="text-muted fw-semibold small d-block mb-1" style="font-size: 0.8rem;">On Project</span>
+                    <h3 class="fw-extrabold mb-0" style="color: #8b5cf6;" th:text="${stats.onProjectConsultants}">45</h3>
+                </div>
+                <div class="stat-icon-wrapper" style="width: 42px; height: 42px; font-size: 1.25rem; background: rgba(139, 92, 246, 0.15); color: #8b5cf6; border: 1px solid rgba(139, 92, 246, 0.2);">
+                    <i class="fa-solid fa-briefcase"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- New Consultants (30 Days) -->
+        <div class="col-xl-2 col-md-4 col-sm-6">
+            <div class="stat-card d-flex align-items-center justify-content-between h-100 p-3">
+                <div>
+                    <span class="text-muted fw-semibold small d-block mb-1" style="font-size: 0.8rem;">New (30d)</span>
+                    <h3 class="fw-extrabold mb-0 text-warning" th:text="${stats.newThisMonth}">15</h3>
+                </div>
+                <div class="stat-icon-wrapper stat-icon-warning" style="width: 42px; height: 42px; font-size: 1.25rem;">
+                    <i class="fa-solid fa-user-plus"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Inactive Consultants -->
+        <div class="col-xl-2 col-md-4 col-sm-6">
+            <div class="stat-card d-flex align-items-center justify-content-between h-100 p-3">
+                <div>
+                    <span class="text-muted fw-semibold small d-block mb-1" style="font-size: 0.8rem;">Inactive</span>
+                    <h3 class="fw-extrabold mb-0 text-danger" th:text="${stats.inactiveConsultants}">15</h3>
+                </div>
+                <div class="stat-icon-wrapper stat-icon-danger" style="width: 42px; height: 42px; font-size: 1.25rem;">
+                    <i class="fa-solid fa-user-slash"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Row 2: Charts (Technology & Status side-by-side) -->
+    <div class="row g-4 mb-4">
+        <!-- Tech Distribution Chart -->
+        <div class="col-lg-6">
+            <div class="content-card h-100">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold text-dark mb-0"><i class="fa-solid fa-chart-pie me-2 text-primary"></i>Technology Distribution</h5>
+                </div>
+                <div style="position: relative; height: 240px;">
+                    <canvas id="techChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status Distribution Chart -->
+        <div class="col-lg-6">
+            <div class="content-card h-100">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold text-dark mb-0"><i class="fa-solid fa-circle-half-stroke me-2 text-primary"></i>Consultant Status Distribution</h5>
+                </div>
+                <div style="position: relative; height: 240px;">
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Row 3: Directory Table (Left 8 Columns) & Activity Log Feed (Right 4 Columns) -->
+    <div class="row g-4">
+        <!-- Overview Table -->
+        <div class="col-lg-8">
+            <div class="content-card h-100">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold text-dark mb-0"><i class="fa-solid fa-users-viewfinder me-2 text-primary"></i>Latest Directory Overview</h5>
+                    <a th:href="@{/consultants}" class="btn btn-primary btn-sm">Manage Directory</a>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="table custom-table align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Technology</th>
+                                <th>Status</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="consultant : ${recentConsultants}">
+                                <td>
+                                    <div class="d-flex align-items-center gap-2.5">
+                                        <div class="rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center fw-bold" 
+                                             style="width: 34px; height: 34px; font-size: 0.9rem; border: 1px solid rgba(99,102,241,0.25);"
+                                             th:text="${#strings.substring(consultant.name, 0, 1)}">J</div>
+                                        <div>
+                                            <span class="fw-bold text-dark d-block" style="font-size: 0.9rem;" th:text="${consultant.name}">John Doe</span>
+                                            <small class="text-muted d-block" style="font-size: 0.75rem;" th:text="${consultant.email}">john@email.com</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="tech-badge" style="font-size: 0.75rem; padding: 0.2rem 0.5rem;" th:text="${consultant.technology}">Java</span>
+                                </td>
+                                <td>
+                                    <!-- Dynamic Class configuration for Available, On Project, Inactive -->
+                                    <span th:class="${consultant.status == 'Available' ? 'badge-status-active' : (consultant.status == 'On Project' ? 'badge-status-active bg-primary bg-opacity-10 text-primary border-primary border-opacity-25' : 'badge-status-inactive')}"
+                                          th:text="${consultant.status}">Available</span>
+                                </td>
+                                <td class="text-end">
+                                    <div class="d-inline-flex gap-1">
+                                        <a th:href="@{/consultants/view/{id}(id=${consultant.id})}" class="btn btn-sm action-btn btn-outline-info" style="width:28px; height:28px; font-size:0.8rem;" title="View Details">
+                                            <i class="fa-solid fa-eye"></i>
+                                        </a>
+                                        <!-- Hide edit for Viewer role -->
+                                        <a th:if="${currentRole != 'Viewer'}" th:href="@{/consultants/edit/{id}(id=${consultant.id})}" class="btn btn-sm action-btn btn-outline-primary" style="width:28px; height:28px; font-size:0.8rem;" title="Edit">
+                                            <i class="fa-solid fa-pen"></i>
+                                        </a>
+                                        <!-- Hide delete for non-Administrator roles -->
+                                        <button th:if="${currentRole == 'Administrator'}" type="button" class="btn btn-sm action-btn btn-outline-danger delete-btn" style="width:28px; height:28px; font-size:0.8rem;"
+                                                th:data-id="${consultant.id}" th:data-name="${consultant.name}" title="Delete">
+                                            <i class="fa-solid fa-trash-can"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(recentConsultants)}">
+                                <td colspan="4" class="text-center text-muted py-4">
+                                    No records available.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Activity Feed (Right 4 Columns) -->
+        <div class="col-lg-4">
+            <div class="content-card h-100 d-flex flex-column justify-content-between">
+                <div>
+                    <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-history me-2 text-primary"></i>System Activities</h5>
+                    <div class="d-flex flex-column gap-3" style="max-height: 320px; overflow-y: auto; padding-right: 5px;">
+                        <div th:each="log : ${notifications}" class="p-2.5 rounded border border-secondary border-opacity-10 bg-white bg-opacity-25 d-flex gap-2">
+                            <div class="text-primary mt-1" style="font-size: 0.85rem;"><i class="fa-solid fa-circle-info"></i></div>
+                            <div>
+                                <p class="mb-0 text-dark small fw-semibold" th:text="${log.details}">Action log</p>
+                                <small class="text-muted" style="font-size: 0.75rem;" th:text="${#temporals.format(log.createdAt, 'yyyy-MM-dd HH:mm')}">Date</small>
+                            </div>
+                        </div>
+                        <div th:if="${#lists.isEmpty(notifications)}" class="text-center text-muted py-5 small">
+                            <i class="fa-solid fa-circle-nodes fa-2x mb-2 opacity-30"></i>
+                            No notifications yet.
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-3 pt-3 border-top text-center text-muted small fw-semibold">
+                    Current user session: <span class="text-primary" th:text="${currentRole}">Administrator</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title fw-bold" id="deleteModalLabel"><i class="fa-solid fa-triangle-exclamation me-2"></i>Delete Confirmation</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center p-4">
+                    <i class="fa-solid fa-trash-can text-danger fa-3x mb-3 animate__animated animate__shakeX"></i>
+                    <h5 class="fw-bold mb-2">Are you sure?</h5>
+                    <p class="text-muted mb-0">You are about to delete consultant <strong id="deleteConsultantName"></strong>. This action cannot be undone.</p>
+                </div>
+                <div class="modal-footer justify-content-center border-0 pb-4">
+                    <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">Cancel</button>
+                    <a id="confirmDeleteBtn" href="#" class="btn btn-danger px-4">Yes, Delete</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script for Dynamic Charts -->
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        document.addEventListener("DOMContentLoaded", function () {
+            // --- Tech distribution chart configuration ---
+            const techData = /*[[${stats.technologyDistribution}]]*/ {};
+            const techLabels = Object.keys(techData);
+            const techValues = Object.values(techData);
+
+            const themeColors = {
+                'Java': { bg: 'rgba(99, 102, 241, 0.75)', border: '#6366f1' },      // Indigo
+                'Angular': { bg: 'rgba(239, 68, 68, 0.75)', border: '#ef4444' },   // Rose
+                'Python': { bg: 'rgba(245, 158, 11, 0.75)', border: '#f59e0b' },    // Amber
+                'React': { bg: 'rgba(14, 165, 233, 0.75)', border: '#0ea5e9' }      // Sky Blue
+            };
+
+            const fallbackColors = [
+                { bg: 'rgba(139, 92, 246, 0.75)', border: '#8b5cf6' },
+                { bg: 'rgba(236, 72, 153, 0.75)', border: '#ec4899' },
+                { bg: 'rgba(16, 185, 129, 0.75)', border: '#10b981' }
+            ];
+
+            const techBg = [];
+            const techBorders = [];
+
+            techLabels.forEach((label, idx) => {
+                if (themeColors[label]) {
+                    techBg.push(themeColors[label].bg);
+                    techBorders.push(themeColors[label].border);
+                } else {
+                    const fallback = fallbackColors[idx % fallbackColors.length];
+                    techBg.push(fallback.bg);
+                    techBorders.push(fallback.border);
+                }
+            });
+
+            const techCtx = document.getElementById('techChart').getContext('2d');
+            new Chart(techCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: techLabels,
+                    datasets: [{
+                        data: techValues,
+                        backgroundColor: techBg,
+                        borderColor: techBorders,
+                        borderWidth: 2,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                boxWidth: 10,
+                                usePointStyle: true,
+                                pointStyle: 'circle',
+                                font: { family: "'Plus Jakarta Sans', sans-serif", size: 11, weight: '600' }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // --- Status distribution chart configuration ---
+            const statusData = /*[[${stats.statusDistribution}]]*/ {};
+            const statusLabels = Object.keys(statusData);
+            const statusValues = Object.values(statusData);
+
+            const statusColors = {
+                'Available': { bg: 'rgba(14, 165, 233, 0.75)', border: '#0ea5e9' },    // Sky Blue
+                'On Project': { bg: 'rgba(99, 102, 241, 0.75)', border: '#6366f1' },   // Indigo
+                'Inactive': { bg: 'rgba(239, 68, 68, 0.75)', border: '#ef4444' }       // Rose
+            };
+
+            const statusBg = [];
+            const statusBorders = [];
+
+            statusLabels.forEach(label => {
+                if (statusColors[label]) {
+                    statusBg.push(statusColors[label].bg);
+                    statusBorders.push(statusColors[label].border);
+                } else {
+                    statusBg.push('rgba(148, 163, 184, 0.75)');
+                    statusBorders.push('#94a3b8');
+                }
+            });
+
+            const statusCtx = document.getElementById('statusChart').getContext('2d');
+            new Chart(statusCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: statusLabels,
+                    datasets: [{
+                        data: statusValues,
+                        backgroundColor: statusBg,
+                        borderColor: statusBorders,
+                        borderWidth: 2,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                boxWidth: 10,
+                                usePointStyle: true,
+                                pointStyle: 'circle',
+                                font: { family: "'Plus Jakarta Sans', sans-serif", size: 11, weight: '600' }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // --- Delete Confirmation Action ---
+            const deleteButtons = document.querySelectorAll(".delete-btn");
+            const deleteModal = new bootstrap.Modal(document.getElementById("deleteModal"));
+            const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
+            const deleteConsultantName = document.getElementById("deleteConsultantName");
+
+            deleteButtons.forEach(btn => {
+                btn.addEventListener("click", function() {
+                    const id = this.getAttribute("data-id");
+                    const name = this.getAttribute("data-name");
+                    deleteConsultantName.textContent = name;
+                    confirmDeleteBtn.setAttribute("href", "/consultants/delete/" + id);
+                    deleteModal.show();
+                });
+            });
+        });
+        /*]]>*/
+    </script>
+</div>
+</body>
+</html>

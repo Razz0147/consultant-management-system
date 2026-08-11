@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout(${pageTitle}, ~{::div.form-container})}">
+<body>
+<div class="form-container">
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="content-card">
+                <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom border-secondary border-opacity-10">
+                    <div>
+                        <h4 class="fw-bold mb-1 text-dark" th:text="${pageTitle}">Add New Consultant</h4>
+                        <p class="text-muted small mb-0 fw-semibold">Fill in the consultant profile and tech stack details below.</p>
+                    </div>
+                    <a th:href="@{/consultants}" class="btn btn-outline-secondary btn-sm">
+                        <i class="fa-solid fa-arrow-left me-1"></i> Back to List
+                    </a>
+                </div>
+
+                <form th:action="@{/consultants/save}" th:object="${consultant}" method="post" class="needs-validation" novalidate>
+                    <!-- Hidden ID for edit mode -->
+                    <input type="hidden" th:field="*{id}" />
+
+                    <!-- Name Field -->
+                    <div class="mb-3">
+                        <label for="name" class="form-label fw-bold small text-secondary">Full Name <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fa-solid fa-user"></i></span>
+                            <input type="text" th:field="*{name}" class="form-control" id="name" placeholder="e.g. John Doe"
+                                   th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''" required>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name error</div>
+                        </div>
+                    </div>
+
+                    <!-- Email & Phone Grid -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label for="email" class="form-label fw-bold small text-secondary">Email Address <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fa-solid fa-envelope"></i></span>
+                                <input type="email" th:field="*{email}" class="form-control" id="email" placeholder="e.g. john.doe@company.com"
+                                       th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''" required>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Email error</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="phone" class="form-label fw-bold small text-secondary">Phone Number <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fa-solid fa-phone"></i></span>
+                                <input type="text" th:field="*{phone}" class="form-control" id="phone" placeholder="e.g. +1 555-0101"
+                                       th:classappend="${#fields.hasErrors('phone')} ? 'is-invalid' : ''" required>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}">Phone error</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Technology & Experience Grid -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-8">
+                            <label for="technology" class="form-label fw-bold small text-secondary">Technology Stack <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fa-solid fa-code"></i></span>
+                                <input type="text" th:field="*{technology}" class="form-control" id="technology" placeholder="e.g. Java, Spring Boot, React"
+                                       th:classappend="${#fields.hasErrors('technology')} ? 'is-invalid' : ''" required>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('technology')}" th:errors="*{technology}">Technology error</div>
+                            </div>
+                            <small class="form-text text-muted fw-semibold">Separate multiple skills with commas (e.g. Java, AWS, Angular)</small>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="experience" class="form-label fw-bold small text-secondary">Experience (Years) <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fa-solid fa-briefcase"></i></span>
+                                <input type="number" th:field="*{experience}" class="form-control" id="experience" min="0" max="50" placeholder="e.g. 5"
+                                       th:classappend="${#fields.hasErrors('experience')} ? 'is-invalid' : ''" required>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('experience')}" th:errors="*{experience}">Experience error</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Status Field -->
+                    <div class="mb-4">
+                        <label for="status" class="form-label fw-bold small text-secondary">Availability Status <span class="text-danger">*</span></label>
+                        <select th:field="*{status}" class="form-select" id="status" th:classappend="${#fields.hasErrors('status')} ? 'is-invalid' : ''">
+                            <option value="Available">Available</option>
+                            <option value="On Project">On Project</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('status')}" th:errors="*{status}">Status error</div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex justify-content-end gap-2 pt-3 border-top border-secondary border-opacity-10">
+                        <a th:href="@{/consultants}" class="btn btn-light border px-4">Cancel</a>
+                        <button type="submit" class="btn btn-primary px-4">
+                            <i class="fa-solid fa-floppy-disk me-1"></i> <span th:text="${isEdit ? 'Update Profile' : 'Save Profile'}">Save</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
