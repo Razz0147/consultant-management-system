@@ -133,7 +133,28 @@
                 </div>
 
                 <div th:replace="${content}"></div>
-            </main>
+             </main>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal (Global) -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title fw-bold" id="deleteModalLabel"><i class="fa-solid fa-triangle-exclamation me-2"></i>Delete Confirmation</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center p-4">
+                    <i class="fa-solid fa-trash-can text-danger fa-3x mb-3 animate__animated animate__shakeX"></i>
+                    <h5 class="fw-bold mb-2">Are you sure?</h5>
+                    <p class="text-muted mb-0">You are about to delete consultant <strong id="deleteConsultantName"></strong>. This action cannot be undone.</p>
+                </div>
+                <div class="modal-footer justify-content-center border-0 pb-4">
+                    <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">Cancel</button>
+                    <a id="confirmDeleteBtn" href="#" class="btn btn-danger px-4">Yes, Delete</a>
+                </div>
+            </div>
         </div>
     </div>
 
